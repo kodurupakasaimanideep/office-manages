@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { Upload, Star, Eye, Trash2, FileText, FolderOpen, Sparkles } from 'lucide-react';
 
 const CATEGORIES = [
@@ -12,17 +10,25 @@ const CATEGORIES = [
 ];
 
 const Dashboard = () => {
-  const files = useQuery(api.dashboard.getFiles) || [];
-  const addFile = useMutation(api.dashboard.addFile);
-  const updateFile = useMutation(api.dashboard.updateFile);
-  const removeFile = useMutation(api.dashboard.deleteFile);
+  const [files, setFiles] = useState(() => JSON.parse(localStorage.getItem('dashboard_files') || '[]'));
+  useEffect(() => localStorage.setItem('dashboard_files', JSON.stringify(files)), [files]);
+
+  const addFile = async (f) => setFiles(prev => [...prev, { ...f, _id: Date.now().toString() }]);
+  const updateFileProc = async (args) => setFiles(prev => prev.map(f => f._id === args.id ? { ...f, ...args } : f));
+  const removeFile = async (args) => setFiles(prev => prev.filter(f => f._id !== args.id));
 
   const [showUpload, setShowUpload] = useState(false);
   const [uploadCat, setUploadCat] = useState('pre-metric');
   const [activeCat, setActiveCat] = useState(null);
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const toggleImportant = async (id, current) => {
-    await updateFile({ id, important: !current });
+    await updateFileProc({ id, important: !current });
   };
 
   const deleteFile = async (id) => {
@@ -52,13 +58,6 @@ const Dashboard = () => {
     setShowUpload(false);
   };
 
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   const filteredFiles = activeCat ? files.filter(f => f.category === activeCat) : files;
 
   return (
@@ -73,9 +72,9 @@ const Dashboard = () => {
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
             <Sparkles size={32} color="#93c5fd" />
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 900, margin: 0 }}>KPS Cloud Dashboard</h1>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: 900, margin: 0 }}>KPS Office Dashboard</h1>
           </div>
-          <p style={{ opacity: 0.9, fontSize: '1.1rem', fontWeight: 500 }}>Securely manage departmental files with real-time cloud sync.</p>
+          <p style={{ opacity: 0.9, fontSize: '1.1rem', fontWeight: 500 }}>Securely manage departmental files with offline persistent storage.</p>
           <div style={{ display: 'flex', gap: '1.5rem', marginTop: '2rem' }}>
             <button onClick={() => setShowUpload(true)} style={{ padding: '0.9rem 2rem', background: 'white', color: '#2563eb', border: 'none', borderRadius: '1.25rem', fontWeight: 900, cursor: 'pointer' }}>+ Upload PDF</button>
           </div>
@@ -109,7 +108,7 @@ const Dashboard = () => {
           }}>
             <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>{c.icon}</div>
             <div style={{ fontWeight: 900, fontSize: '1.1rem', color: '#1e293b' }}>{c.shortName}</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700 }}>{files.filter(f => f.category === c.id).length} Saved</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700 }}>{files.filter(f => f.category === c.id).length} Items</div>
           </div>
         ))}
       </div>
@@ -122,8 +121,8 @@ const Dashboard = () => {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead><tr style={{ background: '#f1f5f9' }}>{['Document Name', 'Upload Date', 'Size', 'Actions'].map(h => <th key={h} style={{ padding: '1.1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 900, color: '#64748b' }}>{h}</th>)}</tr></thead>
           <tbody>
-            {filteredFiles.length === 0 ? <tr><td colSpan="4" style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>No cloud files found.</td></tr> :
-              filteredFiles.map((f, i) => (
+            {(filteredFiles || []).length === 0 ? <tr><td colSpan="4" style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>No local files found.</td></tr> :
+              (filteredFiles || []).map((f, i) => (
                 <tr key={i} style={{ borderBottom: '1px solid var(--border)', background: i % 2 === 0 ? 'white' : '#f8fbfc' }}>
                   <td style={{ padding: '1.25rem 1.5rem', fontWeight: 800 }}>{f.name}</td>
                   <td style={{ padding: '1.25rem 1.5rem' }}>{new Date(f.uploadDate).toLocaleDateString()}</td>
@@ -143,7 +142,7 @@ const Dashboard = () => {
       {showUpload && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="glass-card" style={{ background: 'white', padding: '2.5rem', borderRadius: '2rem', width: '400px' }}>
-            <h2 style={{ marginBottom: '1.5rem', fontWeight: 900 }}>Cloud Upload</h2>
+            <h2 style={{ marginBottom: '1.5rem', fontWeight: 900 }}>Quick Upload</h2>
             <select value={uploadCat} onChange={e => setUploadCat(e.target.value)} style={{ width: '100%', padding: '0.85rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '1rem', marginBottom: '1rem' }}>
                 {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
             </select>

@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import React, { useState, useEffect } from 'react';
 import { Users, Edit, Trash2, Plus, X } from 'lucide-react';
 
 const CARD_PALETTES = [
@@ -10,33 +8,34 @@ const CARD_PALETTES = [
 ];
 
 const SectionManagement = () => {
-  const sections = useQuery(api.sections.get) || [];
-  const addSection = useMutation(api.sections.add);
-  const updateSection = useMutation(api.sections.update);
-  const removeSection = useMutation(api.sections.remove);
+  const [sections, setSections] = useState(() => JSON.parse(localStorage.getItem('sections') || '[]'));
+  useEffect(() => localStorage.setItem('sections', JSON.stringify(sections)), [sections]);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formData, setFormData] = useState({ id: null, name: '', head: '', members: '', description: '' });
 
-  const handleSave = async (e) => {
+  const handleSave = (e) => {
     e.preventDefault();
-    if (formData.id) { await updateSection({ ...formData, id: formData.id }); } 
-    else { await addSection({ ...formData }); }
+    if (formData.id) { 
+      setSections(sections.map(s => s.id === formData.id ? { ...formData } : s));
+    } else { 
+      setSections([...sections, { ...formData, id: Date.now().toString() }]);
+    }
     setIsFormOpen(false);
   };
 
-  const handleDelete = async (id) => { if (window.confirm('Delete?')) await removeSection({ id }); };
+  const handleDelete = (id) => { if (window.confirm('Delete?')) setSections(sections.filter(s => s.id !== id)); };
 
   if (isFormOpen) {
     return (
       <div style={{ padding: '2rem', background: 'white', borderRadius: '1rem', border: '1px solid #e2e8f0', maxWidth: '600px' }}>
-        <h2 style={{ color: '#6366f1' }}>Cloud Section Entry</h2>
+        <h2 style={{ color: '#6366f1' }}>Offline Section Entry</h2>
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
           <input placeholder="Name" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }} required />
           <input placeholder="Head" value={formData.head} onChange={e => setFormData({ ...formData, head: e.target.value })} style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }} required />
           <input placeholder="Members" value={formData.members} onChange={e => setFormData({ ...formData, members: e.target.value })} style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }} required />
           <textarea placeholder="Description" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0', minHeight: '100px' }} required />
-          <button type="submit" style={{ padding: '1rem', background: '#6366f1', color: 'white', border: 'none', borderRadius: '1rem', fontWeight: 900 }}>Save to Cloud</button>
+          <button type="submit" style={{ padding: '1rem', background: '#6366f1', color: 'white', border: 'none', borderRadius: '1rem', fontWeight: 900 }}>Save Locally</button>
         </form>
       </div>
     );
@@ -45,12 +44,12 @@ const SectionManagement = () => {
   return (
     <div style={{ padding: '0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b' }}>Section Management (Cloud Sync)</h1>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b' }}>Section Management</h1>
         <button onClick={() => { setFormData({ id: null, name: '', head: '', members: '', description: '' }); setIsFormOpen(true); }} style={{ padding: '0.75rem 1.25rem', background: '#6366f1', color: 'white', border: 'none', borderRadius: '0.75rem', fontWeight: 800 }}>+ Add New Section</button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
-        {sections.length === 0 ? <div style={{ textAlign:'center', padding:'4rem', color:'var(--text-muted)' }}>No cloud sections discovered.</div> :
+        {sections.length === 0 ? <div style={{ textAlign:'center', padding:'4rem', color:'var(--text-muted)' }}>No sections found in browser storage.</div> :
           sections.map((section, idx) => {
             const palette = CARD_PALETTES[idx % CARD_PALETTES.length];
             return (
@@ -58,8 +57,8 @@ const SectionManagement = () => {
                 <div style={{ background: palette.header, padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ margin: 0, fontWeight: 700, color: 'white' }}>{section.name}</h3>
                   <div style={{ display: 'flex', gap: '0.4rem' }}>
-                    <button onClick={() => { setFormData({ ...section, id: section._id }); setIsFormOpen(true); }} style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '0.4rem', cursor: 'pointer', color: 'white' }}><Edit size={14} /></button>
-                    <button onClick={() => handleDelete(section._id)} style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '0.4rem', cursor: 'pointer', color: 'white' }}><Trash2 size={14} /></button>
+                    <button onClick={() => { setFormData({ ...section }); setIsFormOpen(true); }} style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '0.4rem', cursor: 'pointer', color: 'white' }}><Edit size={14} /></button>
+                    <button onClick={() => handleDelete(section.id)} style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '0.4rem', cursor: 'pointer', color: 'white' }}><Trash2 size={14} /></button>
                   </div>
                 </div>
                 <div style={{ padding: '1.25rem' }}>
