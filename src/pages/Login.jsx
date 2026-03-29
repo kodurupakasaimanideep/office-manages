@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
 const Login = () => {
@@ -21,16 +21,8 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <div className="auth-logo">
-          <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
-            alt="Emblem" 
-            className="auth-logo-img"
-          />
-        </div>
-        
-        <h1 className="auth-title">KPS Office</h1>
-        <p className="auth-subtitle">Secure Government Administration Portal</p>
+        <h1 className="auth-title" style={{ fontSize: '1.4rem' }}>KPS Office Management System</h1>
+        <p className="auth-subtitle">Employee Management System</p>
 
         <form className="auth-form" onSubmit={handleLogin}>
           {error && <div style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
@@ -75,12 +67,21 @@ const Login = () => {
           </div>
 
           <button type="submit" className="auth-button">
-            <ShieldCheck size={20} /> Secure Login
+            <Lock size={20} /> Sign In
           </button>
         </form>
 
-        <div className="auth-footer">
-          Made by Saimanideep · © 2026 KPS Administration
+        <div className="auth-footer" style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.8rem', color: '#6b7280' }}>
+          <div style={{ marginBottom: '0.5rem' }}>© 2026 KPS Office Management</div>
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+            <Link to="/about" style={{ color: '#2563eb', textDecoration: 'none' }}>About</Link>
+            <span>|</span>
+            <Link to="/contact" style={{ color: '#2563eb', textDecoration: 'none' }}>Contact</Link>
+            <span>|</span>
+            <Link to="/privacy-policy" style={{ color: '#2563eb', textDecoration: 'none' }}>Privacy Policy</Link>
+            <span>|</span>
+            <Link to="/terms" style={{ color: '#2563eb', textDecoration: 'none' }}>Terms</Link>
+          </div>
         </div>
       </div>
     </div>

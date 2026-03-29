@@ -12,12 +12,20 @@ import Schemes from './pages/Schemes';
 import Scholarship from './pages/Scholarship';
 import BankConfirmations from './pages/BankConfirmations';
 import Jayantis from './pages/Jayantis';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import Terms from './pages/Terms';
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/terms" element={<Terms />} />
         
         <Route element={<AdminLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
