@@ -52,6 +52,13 @@ const Dashboard = () => {
     setShowUpload(false);
   };
 
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const filteredFiles = activeCat ? files.filter(f => f.category === activeCat) : files;
 
   return (
@@ -60,7 +67,8 @@ const Dashboard = () => {
       <div style={{ 
         background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', 
         borderRadius: '2rem', padding: '2.5rem 3rem', marginBottom: '2.5rem', color: 'white',
-        boxShadow: '0 15px 35px rgba(37, 99, 235, 0.3)', position: 'relative', overflow: 'hidden'
+        boxShadow: '0 15px 35px rgba(37, 99, 235, 0.3)', position: 'relative', overflow: 'hidden',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
       }}>
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
@@ -72,6 +80,22 @@ const Dashboard = () => {
             <button onClick={() => setShowUpload(true)} style={{ padding: '0.9rem 2rem', background: 'white', color: '#2563eb', border: 'none', borderRadius: '1.25rem', fontWeight: 900, cursor: 'pointer' }}>+ Upload PDF</button>
           </div>
         </div>
+
+        {/* Beautiful Real-time Clock */}
+        <div style={{ 
+          position: 'relative', zIndex: 1, textAlign: 'right', 
+          background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', 
+          padding: '1.5rem 2rem', borderRadius: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+        }}>
+          <div style={{ fontSize: '2.2rem', fontWeight: 900, letterSpacing: '1px', textShadow: '0 0 20px rgba(255,255,255,0.3)' }}>
+            {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
+          </div>
+          <div style={{ fontSize: '0.9rem', fontWeight: 700, opacity: 0.8, textTransform: 'uppercase', letterSpacing: '2px', marginTop: '0.25rem' }}>
+            {time.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+          </div>
+        </div>
+
         <div style={{ position: 'absolute', right: '-2rem', top: '-1rem', opacity: 0.1 }}>
             <FolderOpen size={300} fill="white" />
         </div>
