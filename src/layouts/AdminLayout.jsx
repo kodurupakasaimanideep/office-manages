@@ -18,7 +18,8 @@ import {
   Landmark,
   FileSpreadsheet,
   PartyPopper,
-  X
+  X,
+  CloudUpload
 } from 'lucide-react';
 
 const navItems = [
@@ -32,6 +33,7 @@ const navItems = [
   { name: 'Rice-indent', path: '/rice-indent', icon: FileSpreadsheet, keywords: ['rice', 'indent', 'hostel', 'ration'] },
   { name: 'Bank Confirmations', path: '/bank-confirmations', icon: Landmark, keywords: ['bank', 'confirmation', 'payment'] },
   { name: 'Jayantis', path: '/jayantis', icon: PartyPopper, keywords: ['jayanti', 'festival', 'event', 'celebration', 'ganesh', 'ambedkar'] },
+  { name: 'Total Website Sync', path: '/data-sync', icon: CloudUpload, keywords: ['sync', 'convex', 'cloud', 'migration', 'backup'] },
 ];
 
 const AdminLayout = () => {

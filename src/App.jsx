@@ -12,6 +12,7 @@ import Schemes from './pages/Schemes';
 import Scholarship from './pages/Scholarship';
 import BankConfirmations from './pages/BankConfirmations';
 import Jayantis from './pages/Jayantis';
+import DataSync from './pages/DataSync';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/rice-indent" element={<RiceIndent />} />
           <Route path="/bank-confirmations" element={<BankConfirmations />} />
           <Route path="/jayantis" element={<Jayantis />} />
+          <Route path="/data-sync" element={<DataSync />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
