@@ -4,31 +4,33 @@ import { query, mutation } from "./_generated/server";
 export const get = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("riceIndents").collect();
+    return await ctx.db.query("dashboardFiles").collect();
   },
 });
 
 export const add = mutation({
   args: {
-    hostelName: v.string(),
-    pendingHostel: v.string(),
-    description: v.string(),
-    lastDate: v.string(),
+    idLocal: v.string(),
+    name: v.string(),
+    category: v.string(),
     status: v.string(),
+    details: v.string(),
+    size: v.number(),
+    uploadDate: v.string(),
+    important: v.boolean(),
+    dataUrl: v.string(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("riceIndents", args);
+    await ctx.db.insert("dashboardFiles", args);
   },
 });
 
 export const update = mutation({
   args: {
-    id: v.id("riceIndents"),
-    hostelName: v.optional(v.string()),
-    pendingHostel: v.optional(v.string()),
-    description: v.optional(v.string()),
-    lastDate: v.optional(v.string()),
+    id: v.id("dashboardFiles"),
+    important: v.optional(v.boolean()),
     status: v.optional(v.string()),
+    details: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...rest } = args;
@@ -37,7 +39,7 @@ export const update = mutation({
 });
 
 export const remove = mutation({
-  args: { id: v.id("riceIndents") },
+  args: { id: v.id("dashboardFiles") },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },

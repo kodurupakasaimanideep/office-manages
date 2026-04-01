@@ -1,0 +1,65 @@
+/* eslint-disable */
+/**
+ * Generated `api` utility.
+ *
+ * THIS CODE IS AUTOMATICALLY GENERATED.
+ *
+ * To regenerate, run `npx convex dev`.
+ * @module
+ */
+
+import type * as bankConfirmations from "../bankConfirmations.js";
+import type * as dashboardFiles from "../dashboardFiles.js";
+import type * as jayantis from "../jayantis.js";
+import type * as leavesRecords from "../leavesRecords.js";
+import type * as pendingRecords from "../pendingRecords.js";
+import type * as riceIndents from "../riceIndents.js";
+import type * as schemes from "../schemes.js";
+import type * as scholarships from "../scholarships.js";
+import type * as sections from "../sections.js";
+
+import type {
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
+} from "convex/server";
+
+declare const fullApi: ApiFromModules<{
+  bankConfirmations: typeof bankConfirmations;
+  dashboardFiles: typeof dashboardFiles;
+  jayantis: typeof jayantis;
+  leavesRecords: typeof leavesRecords;
+  pendingRecords: typeof pendingRecords;
+  riceIndents: typeof riceIndents;
+  schemes: typeof schemes;
+  scholarships: typeof scholarships;
+  sections: typeof sections;
+}>;
+
+/**
+ * A utility for referencing Convex functions in your app's public API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = api.myModule.myFunction;
+ * ```
+ */
+export declare const api: FilterApi<
+  typeof fullApi,
+  FunctionReference<any, "public">
+>;
+
+/**
+ * A utility for referencing Convex functions in your app's internal API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = internal.myModule.myFunction;
+ * ```
+ */
+export declare const internal: FilterApi<
+  typeof fullApi,
+  FunctionReference<any, "internal">
+>;
+
+export declare const components: {};

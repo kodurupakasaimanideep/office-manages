@@ -1,9 +1,10 @@
-import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
 
 export const get = query({
+  args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("sections").order("desc").collect();
+    return await ctx.db.query("sections").collect();
   },
 });
 
@@ -16,17 +17,18 @@ export const add = mutation({
     files: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("sections", args);
+    const id = await ctx.db.insert("sections", args);
+    return id;
   },
 });
 
 export const update = mutation({
-  args: { 
+  args: {
     id: v.id("sections"),
-    name: v.string(),
-    head: v.string(),
-    members: v.string(),
-    description: v.string(),
+    name: v.optional(v.string()),
+    head: v.optional(v.string()),
+    members: v.optional(v.string()),
+    description: v.optional(v.string()),
     files: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {

@@ -1,15 +1,25 @@
-import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { defineSchema, defineTable } from "convex/server";
 
 export default defineSchema({
-  dashboardFiles: defineTable({
+  sections: defineTable({
     name: v.string(),
-    category: v.string(),
-    uploadDate: v.string(),
-    size: v.number(),
-    important: v.boolean(),
-    dataUrl: v.string(),
-    status: v.string(),
+    head: v.string(),
+    members: v.string(),
+    description: v.string(),
+    files: v.optional(v.array(v.string())),
+  }),
+  jayantis: defineTable({
+    eventName: v.string(),
+    date: v.string(),
+    place: v.string(),
+    items: v.array(
+      v.object({
+        name: v.string(),
+        amount: v.string(),
+      })
+    ),
+    totalAmount: v.number(),
   }),
   scholarships: defineTable({
     college: v.string(),
@@ -19,7 +29,34 @@ export default defineSchema({
     type: v.string(),
     lastDate: v.string(),
     status: v.string(),
-    section: v.string(),
+    section: v.string(), // OBC or BC
+  }),
+  schemes: defineTable({
+    name: v.string(),
+    headOfSection: v.string(),
+    description: v.string(),
+    announceDate: v.string(),
+    lastDate: v.string(),
+    status: v.string(),
+    progress: v.number(),
+  }),
+  dashboardFiles: defineTable({
+    idLocal: v.string(),
+    name: v.string(),
+    category: v.string(),
+    status: v.string(),
+    details: v.string(),
+    size: v.number(),
+    uploadDate: v.string(),
+    important: v.boolean(),
+    dataUrl: v.string(),
+  }),
+  bankConfirmations: defineTable({
+    college: v.string(),
+    sectionIncharge: v.string(),
+    lastDate: v.string(),
+    progress: v.number(),
+    status: v.string(),
   }),
   pendingRecords: defineTable({
     recordName: v.string(),
@@ -30,27 +67,10 @@ export default defineSchema({
     status: v.string(),
     workPending: v.string(),
   }),
-  schemes: defineTable({
-    name: v.string(),
-    headOfSection: v.string(),
-    status: v.string(),
-    progress: v.float64(),
-  }),
-  bankConfirmations: defineTable({
-    bankName: v.string(),
-    accountNumber: v.string(),
-    status: v.string(),
-    lastUpdated: v.string(),
-  }),
-  jayantis: defineTable({
-    eventName: v.string(),
-    date: v.string(),
-    place: v.string(),
-    amount: v.float64(),
-  }),
   riceIndents: defineTable({
     hostelName: v.string(),
     pendingHostel: v.string(),
+    description: v.string(),
     lastDate: v.string(),
     status: v.string(),
   }),
@@ -58,15 +78,8 @@ export default defineSchema({
     type: v.string(),
     startDate: v.string(),
     endDate: v.string(),
-    days: v.float64(),
+    days: v.union(v.number(), v.string()), // component uses string in reduce but number in state
     reason: v.string(),
     status: v.string(),
-  }),
-  sections: defineTable({
-    name: v.string(),
-    head: v.string(),
-    members: v.string(),
-    description: v.string(),
-    files: v.optional(v.array(v.string())),
   }),
 });

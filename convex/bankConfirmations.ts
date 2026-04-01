@@ -1,31 +1,34 @@
-import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
 
-export const getLabels = query({
+export const get = query({
+  args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("bankConfirmations").order("desc").collect();
+    return await ctx.db.query("bankConfirmations").collect();
   },
 });
 
-export const addLabel = mutation({
+export const add = mutation({
   args: {
-    bankName: v.string(),
-    accountNumber: v.string(),
+    college: v.string(),
+    sectionIncharge: v.string(),
+    lastDate: v.string(),
+    progress: v.number(),
     status: v.string(),
-    lastUpdated: v.string(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("bankConfirmations", args);
+    await ctx.db.insert("bankConfirmations", args);
   },
 });
 
-export const updateLabel = mutation({
-  args: { 
+export const update = mutation({
+  args: {
     id: v.id("bankConfirmations"),
-    bankName: v.string(),
-    accountNumber: v.string(),
-    status: v.string(),
-    lastUpdated: v.string(),
+    college: v.optional(v.string()),
+    sectionIncharge: v.optional(v.string()),
+    lastDate: v.optional(v.string()),
+    progress: v.optional(v.number()),
+    status: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...rest } = args;
@@ -33,7 +36,7 @@ export const updateLabel = mutation({
   },
 });
 
-export const removeLabel = mutation({
+export const remove = mutation({
   args: { id: v.id("bankConfirmations") },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);

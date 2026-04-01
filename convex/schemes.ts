@@ -1,9 +1,10 @@
-import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
 
 export const get = query({
+  args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("schemes").order("desc").collect();
+    return await ctx.db.query("schemes").collect();
   },
 });
 
@@ -11,21 +12,27 @@ export const add = mutation({
   args: {
     name: v.string(),
     headOfSection: v.string(),
+    description: v.string(),
+    announceDate: v.string(),
+    lastDate: v.string(),
     status: v.string(),
-    progress: v.float64(),
+    progress: v.number(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("schemes", args);
+    await ctx.db.insert("schemes", args);
   },
 });
 
 export const update = mutation({
-  args: { 
+  args: {
     id: v.id("schemes"),
-    name: v.string(),
-    headOfSection: v.string(),
-    status: v.string(),
-    progress: v.float64(),
+    name: v.optional(v.string()),
+    headOfSection: v.optional(v.string()),
+    description: v.optional(v.string()),
+    announceDate: v.optional(v.string()),
+    lastDate: v.optional(v.string()),
+    status: v.optional(v.string()),
+    progress: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const { id, ...rest } = args;
