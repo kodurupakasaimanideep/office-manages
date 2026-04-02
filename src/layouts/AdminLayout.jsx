@@ -21,6 +21,7 @@ import {
   X,
   CloudUpload
 } from 'lucide-react';
+import vsLogo from '../assets/vs-logo.png';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, keywords: ['home', 'overview', 'dash'] },
@@ -83,10 +84,10 @@ const AdminLayout = () => {
       <aside className="sidebar">
         <div className="sidebar-header">
           <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
-            alt="Logo" 
+            src={vsLogo} 
+            alt="VS Logo" 
             className="sidebar-logo"
-            style={{ filter: "none" }}
+            style={{ borderRadius: '6px' }}
           />
           <div>
             <div className="sidebar-title">KPS Office</div>

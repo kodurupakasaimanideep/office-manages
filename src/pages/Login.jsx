@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import vsLogo from '../assets/vs-logo.png';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -14,14 +15,17 @@ const Login = () => {
     if (password === 'KpsV') {
       navigate('/dashboard');
     } else {
-      setError('Invalid username or password. (Hint: KpsV)');
+      setError('Invalid username or password.');
     }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1 className="auth-title" style={{ fontSize: '1.4rem' }}>KPS Office Management System</h1>
+        <div className="auth-logo" style={{ background: 'none', boxShadow: 'none', width: '80px', height: '80px' }}>
+          <img src={vsLogo} alt="VS Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        </div>
+        <h1 className="auth-title" style={{ fontSize: '1.4rem', marginTop: '1rem' }}>KPS Office Management System</h1>
         <p className="auth-subtitle">Employee Management System</p>
 
         <form className="auth-form" onSubmit={handleLogin}>
